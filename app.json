@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "smbERP",
+    "slug": "smberp",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "light",
+    "ios": { "supportsTablet": true },
+    "android": { "package": "com.smberp.app" },
+    "web": { "bundler": "metro", "name": "smbERP · Timesheets" }
+  }
+}

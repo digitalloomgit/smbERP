@@ -1,0 +1,9 @@
+export type Role = 'employee' | 'manager' | 'admin';
+export type Status = 'draft' | 'submitted' | 'returned' | 'approved';
+export type Profile = { id: string; display_name: string; manager_id: string | null; active: boolean };
+export type Project = { id: string; code: string; name: string; active: boolean };
+export type Activity = { id: string; project_id: string; code: string; name: string; active: boolean };
+export type Assignment = { id: string; employee_id: string; project_id: string; active: boolean };
+export type Sheet = { id: string; employee_id: string; week_start: string; status: Status; approver_id: string | null; version: number };
+export type Entry = { id: string; timesheet_id: string; work_date: string; project_id: string; activity_id: string; hours: number; description: string };
+export type SheetEvent = { id: string; timesheet_id: string; actor_id: string; kind: string; version: number; reason: string | null; created_at: string };
