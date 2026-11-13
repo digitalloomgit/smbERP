@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
+import { formatDate } from '../../core/dates';
 import { result, supabase } from '../../core/supabase';
 import { Activity, Entry, Profile, Project, Sheet, SheetEvent } from '../../core/types';
 import { Badge, Button, Field, Loading, styles } from '../../core/ui';
@@ -46,7 +47,7 @@ export function Approvals({ userId }: { userId: string }) {
     {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}{notice ? <Text style={styles.subtitle}>{notice}</Text> : null}
     <Button title="Refresh queue" secondary disabled={busy} onPress={() => { setBusy(true); setSelected(null); load().catch(e => setError(e.message)).finally(() => setBusy(false)); }} />
     {busy && <Loading />}{!busy && !sheets.length && <View style={styles.card}><Text style={styles.heading}>You're all caught up.</Text><Text style={styles.subtitle}>Submitted weeks assigned to you will appear here.</Text></View>}
-    {sheets.map(s => <View key={s.id} style={styles.card}><View style={[styles.row, { justifyContent: 'space-between' }]}><View style={{ gap: 7 }}><Text style={styles.heading}>{people.find(p => p.id === s.employee_id)?.display_name || 'Employee'}</Text><Text style={styles.subtitle}>{s.week_start} — {shiftDate(s.week_start, 6)}</Text></View><Badge value={s.status} /><Button title="Review week" disabled={busy} onPress={() => { void open(s); }} /></View></View>)}
+    {sheets.map(s => <View key={s.id} style={styles.card}><View style={[styles.row, { justifyContent: 'space-between' }]}><View style={{ gap: 7 }}><Text style={styles.heading}>{people.find(p => p.id === s.employee_id)?.display_name || 'Employee'}</Text><Text style={styles.subtitle}>{formatDate(s.week_start)} — {formatDate(shiftDate(s.week_start, 6))}</Text></View><Badge value={s.status} /><Button title="Review week" disabled={busy} onPress={() => { void open(s); }} /></View></View>)}
     {selected && <><View style={styles.card}><Text style={styles.heading}>Weekly review · {sumHours(entries)} h</Text><EntryList entries={entries} projects={projects} activities={activities} /><Field label="Reason for returning (required to return)" value={reason} onChange={setReason} /><View style={styles.row}><Button title="Approve entire week" disabled={busy} onPress={() => { void decide('approved'); }} /><Button title="Return for correction" secondary disabled={busy || !reason.trim()} onPress={() => { void decide('returned'); }} /></View></View><History events={events} /></>}
   </View>;
 }

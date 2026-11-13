@@ -30,6 +30,8 @@ npm start
 
 Use Expo Go or a simulator for mobile, or run `npm run web` for a browser. Without configured credentials, the app displays setup instructions.
 
+Set `EXPO_PUBLIC_DATE_FORMAT` in `.env` to control displayed dates. Supported values are `MM/DD/YYYY` (default), `DD/MM/YYYY`, and `YYYY-MM-DD`; values are case insensitive, and unsupported or empty values use the default. Restart Expo after changing it (rebuild exported apps). This applies to week ranges, work-date choices, time entries, and the date portion of approval history. Stored dates remain ISO dates; history timestamps use the device's local timezone and time display.
+
 ## Set up Supabase
 
 1. Create a Supabase project and enable email/password authentication. Employee accounts are provisioned by the business; disable public sign-ups in Supabase Auth settings.
@@ -51,6 +53,22 @@ update public.settings set business_timezone = 'America/New_York';
 ```
 
 All timesheet writes use database functions. Row-level security protects reads and administration; employees cannot directly change approval states or edit submitted/approved entries through the API.
+
+## Load demo data
+
+Use a development Supabase project with the migration already applied.
+
+1. In **Authentication → Users → Add user**, create and confirm these email/password users, choosing your own test passwords:
+   - `admin@smberp.example`
+   - `manager@smberp.example`
+   - `alex@smberp.example`
+   - `jordan@smberp.example`
+2. Paste [the demo seed](supabase/seeds/demo.sql) into the Supabase SQL editor and run it as `postgres`.
+3. Sign in to the app with one of the test accounts. Alex and Jordan have editable current-week drafts. Navigate to the previous three weeks for submitted, returned, and approved examples. Morgan's manager account can review the submitted weeks; the administrator can inspect projects and assignments.
+
+The seed adds two projects, six activities, four assignments, eight timesheets, 32 entries, and ten history events. Entries include 0.5-hour and 8.5-hour examples to exercise warnings. Dates follow the configured business timezone. The existing settings row is preserved.
+
+The script validates that all four Auth accounts exist before changing data and runs in a transaction. Rerunning it preserves existing demo weeks, entries, decisions, projects, and assignments; it restores demo profile names, active status, manager assignments, and required roles. Passwords and Auth users are managed through Supabase, not the seed.
 
 ## Included workflows
 
